@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Quality Checker</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Quality Checker</h1>
+
+        <!-- Image quality section -->
+        <div id="image-section">
+            <img id="display-image" src="../static/images/uploaded_image.jpg" alt="Your uploaded image will appear here">
+            <h3>Are you satisfied with the quality of the taken image?</h3>
+            <div>
+                <button id="quality-yes">Yes</button>
+                <button id="reload-image">Reload the image</button>
+                <button id="quality-no" style="background: red;">No</button>
+            </div>
+        </div>
+
+        <!-- Preprocessing section -->
+        <div id="preprocess-section" style="display: none;">
+            <h3>After removing the background:</h3>
+
+            <img id="preprocessed-image" src="" alt="Preprocessed image">
+
+            <!-- Container for dynamically loaded cropped line images -->
+            <h3>
+                After cropping the preprocessed image on lines:
+                <input type="number" id="projection-value" placeholder="Enter projection value" style="width: 150px; margin-left: 10px;" min="0" max="1" value="0.1" step="0.1" />
+                <span title="This value determines the intensity of the projection for cropping. Adjust if lines are not detected correctly.">❓</span>
+            </h3>
+            <button id="recrop-button" style="margin-bottom: 20px;">Recrop</button>
+            <div id="lines-images" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+
+            <h3>If you are satisfied with the image processing we can continue to the extraction</h3>
+
+            <div>
+                <form action="/set-device">
+                  <label for="devices">Choose the device to run models on:</label>
+                  <select name="devices" id="devices">
+                    <option value="cuda">GPU</option>
+                    <option value="tpu">TPU</option>
+                    <option value="mps">Metal</option>
+                    <option value="cpu">CPU</option>
+                  </select>
+                  <br>
+                  <input type="submit" value="Extract!">
+<!--                  <button id="syntax-check">Check Syntax and Grammar</button>-->
+                </form>
+                <button id="preprocess-no" style="background: red;">Retake the picture</button>
+            </div>
+        </div>
+
+        <!-- Text extraction section -->
+        <div id="extraction-section" style="display: none;">
+            <div id="text-section"></div>
+            <h3>You can modify the extracted text here:</h3>
+
+            <div id="fulltext-section"></div>
+
+            <div>
+                <button id="syntax-check">Check Syntax and Grammar</button>
+                <button id="cut-no" style="background: red;">Retake the photo</button>
+            </div>
+        </div>
+
+        <!-- Syntax and Grammar check section (combined) -->
+        <div id="check-section" style="display: none;">
+            <div>
+                <table>
+                    <tr>
+                        <th>Original Text</th>
+                        <th>Syntax Fixed Text</th>
+                        <th>Grammar Fixed Text</th>
+                    </tr>
+                    <tr>
+                        <td id="check-original"></td>
+                        <td id="check-syntax-fixed"></td>
+                        <td id="check-grammar-fixed"></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <button id="back-preprocessing">Back to the extraction step</button>
+                <button id="try-again" style="background: red">Start From the beginning</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/script.js"></script>
+</body>
+</html>
