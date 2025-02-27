@@ -8,8 +8,9 @@ import logging
 
 from PIL import Image, ImageFile
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+from transformers.generation.configuration_utils import CompileConfig
 
-from lib.model import Model
+from model import Model
 
 
 def get_device():
@@ -29,6 +30,7 @@ class OCRModel(Model):
         processor_path = "microsoft/trocr-base-handwritten"
         self.processor = TrOCRProcessor.from_pretrained(processor_path)
         if load_local_model:
+            from transformers import AutoModel
             self.model = torch.load(model_path, weights_only=False)
             self.model.eval()
         else:

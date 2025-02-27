@@ -15,9 +15,6 @@ flatbuffers = "*"
 numpy = "*"
 packaging = "*"
 sympy = "*"
-onnx = "*"
-tensorflow = "*"
-tensorflow-probability = "*"
 
 [dev-packages]
 ipykernel = "*"

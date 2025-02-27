@@ -1,14 +1,2 @@
-models/*
-*/__pycache__
-venv/
-venv/*
-
-.ropeproject/
-.ropeproject/*
-
-lib/__pycache__/
-
-models/
-
-dist
-onnx2tflite.egg-info
+models
+__pycache__

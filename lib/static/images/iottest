@@ -1,0 +1,79 @@
+import gradio as gr
+import subprocess
+from PIL import Image
+import os
+import cv2
+from threading import Thread
+
+# Define the directory path where images will be saved
+output_dir = os.getcwd()  # Get the current working directory
+os.makedirs(output_dir, exist_ok=True)
+
+# Global variables for the video feed
+video_feed_active = False
+frame = None
+
+def start_video_feed():
+    """Start the video feed using OpenCV."""
+    global video_feed_active, frame
+    video_feed_active = True
+    cap = cv2.VideoCapture(0)  # Open the default camera
+    
+    while video_feed_active:
+        ret, frame = cap.read()
+        if not ret:
+            break
+    cap.release()
+
+def stop_video_feed():
+    """Stop the video feed."""
+    global video_feed_active
+    video_feed_active = False
+
+def get_video_frame():
+    """Return the current frame for the live video feed."""
+    global frame
+    if frame is not None:
+        _, jpeg_frame = cv2.imencode('.jpg', frame)
+        return jpeg_frame.tobytes()
+    return None
+
+def capture_image():
+    """Capture an image from the video feed."""
+    global frame
+    if frame is not None:
+        output_path = os.path.join(output_dir, "captured_image.jpg")
+        cv2.imwrite(output_path, frame)  # Save the current frame as an image
+        img = Image.open(output_path)
+        return img
+    return "No video frame available."
+
+# Start the video feed in a separate thread
+video_thread = Thread(target=start_video_feed)
+video_thread.daemon = True
+video_thread.start()
+
+# Create the Gradio interface
+with gr.Blocks() as demo:
+    with gr.Column():
+        gr.Markdown("# Image Capture Interface with Live Preview")
+        
+        # Live video feed
+        video_display = gr.Video(label="Live Video Feed")
+        
+        # Buttons
+        with gr.Row():
+            generate_button = gr.Button("Take Picture")
+            stop_button = gr.Button("Stop Video Feed")
+        
+        # Image display
+        image_display = gr.Image(type="pil", label="Captured Image")
+        
+        # Button actions
+        video_display.update(fn=get_video_frame, every=0.1)  # Update video feed at 10 FPS
+        generate_button.click(capture_image, outputs=image_display)
+        stop_button.click(stop_video_feed)
+
+    # Launch the Gradio interface
+    demo.launch(server_name="0.0.0.0", server_port=7860)
+

@@ -23,7 +23,8 @@ def dynamic_quantization_model(model, dtype: torch.dtype):
 
 def create_dir_if_not_exist(path):
     """Create a dir at path if not exists."""
-    os.makedirs(path, exist_ok=True)
+    os.makedirs(path, exist_ok=False)
+
 
 def save_model(model_wrapper: Model, save_path):
     torch.save(model_wrapper.get_model(), save_path)
@@ -33,10 +34,10 @@ def quantize_all_models(device, grammar_checker_path, ocr_model_path):
     ocr_model = OCRModel(device, model_path=ocr_model_path)
     grammar_checker.quantize_model()
     ocr_model.quantize_model()
-    create_dir_if_not_exist("models/")
-    save_model(grammar_checker, "models/quantized_grammar_checker_fp16.pth")
-    save_model(ocr_model, "models/quantized_ocr_fp16.pth")
+    create_dir_if_not_exist("./models/")
+    save_model(grammar_checker, "./models/quantized_grammar_checker_fp16.pth")
+    save_model(ocr_model, "./models/quantized_ocr_fp16.pth")
 
 if __name__ == "__main__":
-    device = torch.device("cuda" if torch.cuda.is_available() else xm.xla_device())
+    device = torch.device("cpu")
     quantize_all_models(device, "prithivida/grammar_error_correcter_v1", "microsoft/trocr-base-handwritten")

@@ -8,7 +8,6 @@ import logging
 
 from PIL import Image, ImageFile
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
-from transformers.generation.configuration_utils import CompileConfig
 
 from lib.model import Model
 
@@ -24,16 +23,11 @@ def get_device():
 
 
 class OCRModel(Model):
-    def __init__(self, device: torch.device, model_path: str = "microsoft/trocr-base-handwritten", load_local_model = False):
+    def __init__(self, device: torch.device, model_path: str = "microsoft/trocr-base-handwritten"):
         super().__init__("Image2Text")
         self.device = device
-        processor_path = "microsoft/trocr-base-handwritten"
-        self.processor = TrOCRProcessor.from_pretrained(processor_path)
-        if load_local_model:
-            self.model = torch.load(model_path, weights_only=False)
-            self.model.eval()
-        else:
-            self.model = VisionEncoderDecoderModel.from_pretrained(model_path)
+        self.processor = TrOCRProcessor.from_pretrained(model_path)
+        self.model = VisionEncoderDecoderModel.from_pretrained(model_path)
         self.model = self.model.to(device=device)
 
     def extract_text(self, image: ImageFile.ImageFile|list[ImageFile.ImageFile], max_tokens: int = 200) -> str:
@@ -91,7 +85,6 @@ def main():
     parser.add_argument("--batch_size", type=int, default=4, help="Batch size of images to fit into the model.")
     parser.add_argument("--device",  type=str, required=False,
                         help="The device to be used for benchmark.")
-    parser.add_argument("--load_local_model", type=bool, required=False, help="Should we load a local model or a hugging face model.")
     args = parser.parse_args()
 
     # Load images from the specified directory
@@ -103,7 +96,7 @@ def main():
     else:
         device = torch.device(args.device)
 
-    model = OCRModel(device, args.model_name, load_local_model=args.load_local_model)
+    model = OCRModel(device, args.model_name)
 
     # Process images in batches
     generated_text = process_batch(images, model, args.batch_size)

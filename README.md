@@ -1,108 +1,100 @@
-To check the embedded working project go to the ``iot-raspberry`` branch
-
-# Handwriting correction assistance for teachers
+# TEACHER CORRECTION ASSISTANCE GROUP 4
 
 BERDNYK Mariia - IA/ID
 
-## Environment set-up
+HADDOU Amine - IA/ID
 
-Install requirements listed in `Pipfile` file. Using a python environment manager is strongly recommended.
+SOP DJONKAM Karl Alwyn  - IA/ID
 
-Example of `Pipenv` environment setup:
+---
 
-```shell
-pipenv install
-```
+BENNA Bachir - IoT
 
-Example of Anaconda environment setup (Recommended for GPU user):
+ESSAM Steven - IoT
 
-1. 
-```shell
-conda create -n teacher-assistance python=3.10
-```
-2. 
-```
-The following NEW packages will be INSTALLED:
-Proceed ([y]/n)? y
-```
-3. 
-```shell
-conda activate teacher-assistance
-```
-4. (Optional) for Cuda > 11.8 on Windows:
-```shell
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-```
-5.
-```shell
-pip install -e .
-```
+---
 
-2) Enter the environment for executing scripts correctly : 
-```shell
-pipenv shell
-```
+To process images and extract text using either a Raspberry Pi or a computer with CPU/GPU support.
 
-## Install Spell Checker model
+---
 
-1) Run script to download the model locally :
-```shell
-py .\ai_components\download_spell_checker_model.py
-```
+## Running on Raspberry Pi
 
-It will add a folder in create the folder `models\t5_base_spellchecker_model` which contains the Spell Checker model
+> **Note**: The Raspberry Pi's CPU may not be powerful enough for this process. The operating system may terminate the process to protect runtime stability.
 
-2) Try the Check speller
-```shell
-py .\ai_components\spell_checker.py
-```
+### Steps:
 
-## General use 
+1. **Clone the Repository**  
+   ```bash
+   git clone <repository_url>
+   ```
 
-``python server.py`` will open the localserver, where the full loop can be executed and witnessed.
-At any time, you can replace the ``uploaded_image.jpg`` (*WITH THE SAME NAME*) in the ``front/static/images`` folder and reload the image in the ``server.py``.
+2. **Install Dependencies**  
+   Install the required libraries:  
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-![img.png](images/img.png)
+3. **Configure Network**  
+   - Set up an access point on your computer.  
+   - While building the Raspberry Pi OS image, configure the SSID and password for your network.
 
-## Benchmarking
+4. **Run the Scripts**  
+   - Quantize the model:  
+     ```bash
+     python quantisize.py
+     ```  
+   - Start the server:  
+     ```bash
+     python lib/server.py
+     ```  
+   - Run the IoT interface:  
+     ```bash
+     python lib/static/images/iotInterface.py
+     ```  
+     **Note**: Before running `iotInterface.py`, ensure the following in `lib/static/script.js`:  
+     - The variable `this_ip` should contain the IP address of your Raspberry Pi.  
+     - Do not change the port.
 
-## OCR model benchmark:
-(.txt files are located in ``benchmarks/benchmark_ocr``)
+5. **Access the Interface**  
+   On your computer, navigate to:  
+   ```
+   http://<raspberrypi_ip>:7860
+   ```  
+   - Use the interface to take a picture.  
+   - Click "Next" to send the image for processing.
 
-![img_1.png](images/img_1.png)
+6. **Important Notes**  
+   - When clicking "Extract Text," the Raspberry Pi may become unresponsive until the process is terminated by the OS to protect runtime stability.
 
-![img_2.png](images/img_2.png)
+---
 
-![img_3.png](images/img_3.png)
+## Running on Your Computer (CPU or GPU)
 
-## Spell Checker Benchmark:
-### T5 Spell Checker:
-  Average Time: 3.8025 seconds \
-  Min Time: 0.4341 seconds \
-  Max Time: 31.5263 seconds \
-  Average ROUGE-L Score: 0.7683 
+### Steps:
 
-### Bart Spell Checker:
-  Average Time: 3.2829 seconds \
-  Min Time: 0.8637 seconds \
-  Max Time: 23.9916 seconds \
-  Average ROUGE-L Score: 0.9160 
+1. **Clone the Repository**  
+   ```bash
+   git clone <repository_url>
+   ```
 
-### Autocorrect Spell Checker (selected):
-  Average Time: 0.0011 seconds \
-  Min Time: 0.0000 seconds \
-  Max Time: 0.0020 seconds \
-  Average ROUGE-L Score: 0.8933 
+2. **Install Dependencies**  
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Grammar Checker Benchmark:
-### T5 Grammar Checker (selected):
-  Average Time: 3.1501 seconds \
-  Min Time: 0.4146 seconds \
-  Max Time: 25.4689 seconds \
-  Average ROUGE-L Score: 0.9875 
+3. **Run the Scripts**  
+   - Quantize the model:  
+     ```bash
+     python quantisize.py
+     ```  
+   - Start the server:  
+     ```bash
+     python lib/server.py
+     ```
+   - Go to your_localhost:5000  
 
-### Grammar Synthesis Small:
-  Average Time: 1.7816 seconds \
-  Min Time: 0.5774 seconds \
-  Max Time: 11.3091 seconds \
-  Average ROUGE-L Score: 0.7732 
+4. **Choose CPU or GPU**  
+   - The models will run based on your choice (CPU or GPU) using the interface.
+
+---

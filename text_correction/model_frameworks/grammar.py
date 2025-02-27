@@ -24,7 +24,7 @@ class GrammarModel:
                 self.model_name = "Quantized Grammar Model [int8]"
             except FileNotFoundError:
                 raise ValueError(f"Quantized model not found at {path}")
-        elif quantization == "float16" or quantization == "fp16":
+        elif quantization == "float16":
             print("Loading prithivida/grammar_error_correcter_v1 [quantized into float16] model...")
             self.model = T5ForConditionalGeneration.from_pretrained(os.path.join(self.base_path, "..", "..","models", "prithivida_grammar_error_correcter_v1_fp16"))
             self.model_name = "Quantized Grammar Model [float16]"
