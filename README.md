@@ -1,6 +1,6 @@
 To check the embedded working project go to the ``iot-raspberry`` branch
 
-# TEACHER CORRECTION ASSISTANCE
+# Handwriting correction assistance for teachers
 
 BERDNYK Mariia - IA/ID
 
